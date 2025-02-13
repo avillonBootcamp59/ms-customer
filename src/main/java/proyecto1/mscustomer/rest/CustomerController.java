@@ -40,7 +40,8 @@ public class CustomerController {
     @Operation(summary = "Obtener cliente por ID", description = "Busca un cliente por su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
-            @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
+            @ApiResponse(responseCode = "404", description = "Cliente no encontrado"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/{id}")
     public Mono<ResponseEntity<Customer>> getCustomerById(@PathVariable String id) {
@@ -52,7 +53,8 @@ public class CustomerController {
     @Operation(summary = "Crear un nuevo cliente", description = "Registra un nuevo cliente en el sistema")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Cliente creado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Error en la solicitud, cliente ya existe")
+            @ApiResponse(responseCode = "400", description = "Error en la solicitud, cliente ya existe"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @PostMapping
     public Mono<ResponseEntity<Customer>> createCustomer(@RequestBody @NotNull Customer customer) {
@@ -71,7 +73,8 @@ public class CustomerController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Customer.class))),
             @ApiResponse(responseCode = "404", description = "Cliente no encontrado"),
-            @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @PutMapping("/{id}")
     public Mono<ResponseEntity<Customer>> updateCustomer(@PathVariable String id, @RequestBody Customer updatedCustomer) {
@@ -95,7 +98,8 @@ public class CustomerController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente eliminado correctamente"),
             @ApiResponse(responseCode = "404", description = "Cliente no encontrado"),
-            @ApiResponse(responseCode = "400", description = "Solicitud inválida")
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<Void>> deleteCustomer(@PathVariable String id) {
