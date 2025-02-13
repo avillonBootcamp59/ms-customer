@@ -1,0 +1,157 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8081
+  description: Generated server url
+tags:
+- name: Customer API
+  description: Gestión de Clientes
+paths:
+  /v1.0/customers/{id}:
+    get:
+      tags:
+      - Customer API
+      summary: Obtener cliente por ID
+      description: Busca un cliente por su ID
+      operationId: getCustomerById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Cliente encontrado
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Customer'
+        "404":
+          description: Cliente no encontrado
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Customer'
+    put:
+      tags:
+      - Customer API
+      summary: Actualiza un cliente
+      description: Actualiza datos de un cliente en el sistema
+      operationId: updateCustomer
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+        required: true
+      responses:
+        "400":
+          description: Solicitud inválida
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Customer'
+        "200":
+          description: Cliente actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        "404":
+          description: Cliente no encontrado
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Customer'
+    delete:
+      tags:
+      - Customer API
+      summary: Eliminar un cliente
+      description: Elimina un cliente de la base de datos.
+      operationId: deleteCustomer
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "400":
+          description: Solicitud inválida
+        "200":
+          description: Cliente eliminado correctamente
+        "404":
+          description: Cliente no encontrado
+  /v1.0/customers:
+    get:
+      tags:
+      - Customer API
+      summary: Obtener todos los clientes
+      description: Lista todos los clientes registrados en el banco
+      operationId: getAllCustomers
+      responses:
+        "500":
+          description: Error interno del servidor
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+        "200":
+          description: Clientes obtenidos correctamente
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+    post:
+      tags:
+      - Customer API
+      summary: Crear un nuevo cliente
+      description: Registra un nuevo cliente en el sistema
+      operationId: createCustomer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+        required: true
+      responses:
+        "201":
+          description: Cliente creado exitosamente
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Customer'
+        "400":
+          description: Error en la solicitud
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Customer'
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        numberDocument:
+          type: string
+        email:
+          type: string
