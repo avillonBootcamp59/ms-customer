@@ -64,7 +64,8 @@ public class CustomerController {
                 .switchIfEmpty(repository.save(customer)
                         .map(savedCustomer -> ResponseEntity.status(HttpStatus.CREATED)
                                 .body(savedCustomer)))
-                .onErrorResume(error -> Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST).build())); // Manejo de errores
+                .onErrorResume(error -> Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .build())); // Manejo de errores
     }
 
     @Operation(summary = "Actualiza un cliente", description = "Actualiza datos de un cliente en el sistema")
@@ -77,14 +78,15 @@ public class CustomerController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<Customer>> updateCustomer(@PathVariable String id, @RequestBody Customer updatedCustomer) {
+    public Mono<ResponseEntity<Customer>> updateCustomer(@PathVariable String id, @RequestBody Customer customer) {
         logger.info("Actualizando cliente con ID: {}", id);
         return repository.findById(id)
                 .flatMap(existingCustomer -> {
-                    existingCustomer.setName(updatedCustomer.getName());
-                    existingCustomer.setType(updatedCustomer.getType());
-                    existingCustomer.setNumberDocument(updatedCustomer.getNumberDocument());
-                    existingCustomer.setEmail(updatedCustomer.getEmail());
+                    existingCustomer.setName(customer.getName());
+                    existingCustomer.setType(customer.getType());
+                    existingCustomer.setNumberDocument(customer.getNumberDocument());
+                    existingCustomer.setEmail(customer.getEmail());
+                    existingCustomer.setProfile(customer.getProfile());
                     return repository.save(existingCustomer);
                 })
                 .map(updated -> {
