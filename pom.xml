@@ -107,6 +107,10 @@
 			<version>RELEASE</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -180,13 +184,6 @@
 							</limits>
 						</rule>
 					</rules>
-
-					<excludes>
-						<!-- Excluir paquete completo -->
-						<exclude>com/demo/example/mscustomerdummy/service/impl/*</exclude>
-						<!-- Excluir una clase específica -->
-						<exclude>com/demo/example/mscustomerdummy/MsCustomerDummyApplication.class</exclude>
-					</excludes>
 				</configuration>
 
 			</plugin>
