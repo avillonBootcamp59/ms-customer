@@ -1,22 +1,19 @@
 package proyecto1.mscustomer.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import proyecto1.mscustomer.service.CustomerService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import proyecto1.mscustomer.entity.Customer;
-import proyecto1.mscustomer.repository.CustomerRepository;
+import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1.0/customers")
@@ -25,7 +22,7 @@ import proyecto1.mscustomer.repository.CustomerRepository;
 public class CustomerController {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
-    private final CustomerRepository repository;
+    private final CustomerService customerService;
 
     @Operation(summary = "Obtener todos los clientes", description = "Lista todos los clientes registrados en el banco")
     @ApiResponses(value = {
@@ -34,7 +31,7 @@ public class CustomerController {
     })
     @GetMapping
     public Flux<Customer> getAllCustomers() {
-        return repository.findAll();
+        return customerService.listCustomers();
     }
 
     @Operation(summary = "Obtener cliente por ID", description = "Busca un cliente por su ID")
@@ -44,57 +41,40 @@ public class CustomerController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Customer>> getCustomerById(@PathVariable String id) {
-        return repository.findById(id)
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+    public Mono<Customer> viewCustomer(@RequestHeader Map<String, String> headers, @PathVariable String id) {
+        return customerService.getCustomer(id)
+                .doOnError(throwable -> System.out.println(throwable));
     }
 
-    @Operation(summary = "Crear un nuevo cliente", description = "Registra un nuevo cliente en el sistema")
+    @Operation(summary = "Registrar un cliente", description = "Registra un nuevo cliente en el banco")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Cliente creado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Error en la solicitud, cliente ya existe"),
+            @ApiResponse(responseCode = "201", description = "Cliente registrado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Cliente ya existe"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @PostMapping
-    public Mono<ResponseEntity<Customer>> createCustomer(@RequestBody @NotNull Customer customer) {
-        return repository.findByNumberDocument(customer.getNumberDocument())
-                .flatMap(existing -> Mono.just(ResponseEntity.badRequest()
-                        .body(existing)))
-                .switchIfEmpty(repository.save(customer)
-                        .map(savedCustomer -> ResponseEntity.status(HttpStatus.CREATED)
-                                .body(savedCustomer)))
-                .onErrorResume(error -> Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .build())); // Manejo de errores
+    public Mono<Customer> createCustomer(@Valid @RequestBody Customer customer) {
+        logger.info("Intentando crear cliente con documento: {}", customer.getNumberDocument());
+        return customerService.createCustomer(customer)
+                .doOnSuccess(savedCustomer -> logger.info("Cliente creado con ID: {}", savedCustomer.getId()))
+                .doOnError(error -> logger.error("Error al crear cliente: {}", error.getMessage()));
     }
 
-    @Operation(summary = "Actualiza un cliente", description = "Actualiza datos de un cliente en el sistema")
+    @Operation(summary = "Actualizar datos de un cliente", description = "Modifica datos de un cliente existente")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Cliente actualizado correctamente",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Customer.class))),
+            @ApiResponse(responseCode = "200", description = "Cliente actualizado correctamente"),
             @ApiResponse(responseCode = "404", description = "Cliente no encontrado"),
-            @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
+            @ApiResponse(responseCode = "400", description = "Error en la solicitud"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<Customer>> updateCustomer(@PathVariable String id, @RequestBody Customer customer) {
-        logger.info("Actualizando cliente con ID: {}", id);
-        return repository.findById(id)
-                .flatMap(existingCustomer -> {
-                    existingCustomer.setName(customer.getName());
-                    existingCustomer.setType(customer.getType());
-                    existingCustomer.setNumberDocument(customer.getNumberDocument());
-                    existingCustomer.setEmail(customer.getEmail());
-                    existingCustomer.setProfile(customer.getProfile());
-                    return repository.save(existingCustomer);
-                })
-                .map(updated -> {
-                    logger.info("Cliente actualizado: {}", updated);
-                    return ResponseEntity.ok(updated);
-                })
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+    public Mono<Customer> updateCustomer(@PathVariable String id, @Valid @RequestBody Customer updatedCustomer) {
+        logger.info("Intentando actualizar cliente con ID: {}", id);
+        return customerService.updateCustomer(id, updatedCustomer)
+                .doOnSuccess(customer -> logger.info("Cliente actualizado: {}", customer.getId()))
+                .doOnError(error -> logger.error("Error al actualizar cliente: {}", error.getMessage()));
     }
+
 
     @Operation(summary = "Eliminar un cliente", description = "Elimina un cliente de la base de datos.")
     @ApiResponses(value = {
@@ -104,13 +84,9 @@ public class CustomerController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteCustomer(@PathVariable String id) {
+    public Mono<Void> deleteCustomer(@RequestHeader Map<String, String> headers, @PathVariable String id) {
         logger.info("Eliminando cliente con ID: {}", id);
-        return repository.findById(id)
-                .flatMap(existingCustomer ->
-                        repository.delete(existingCustomer)
-                                .then(Mono.just(ResponseEntity.ok().<Void>build()))
-                )
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+        return customerService.deleteCustomer(id);
     }
+
 }
