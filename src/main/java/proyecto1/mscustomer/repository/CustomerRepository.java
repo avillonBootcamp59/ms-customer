@@ -7,5 +7,5 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface CustomerRepository extends ReactiveMongoRepository<Customer, String> {
-    Mono<Customer> findByNumberDocument(String numberDocument);
+  Mono<Customer> findByNumberDocument(String numberDocument);
 }
