@@ -8,8 +8,8 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 @EnableReactiveMongoRepositories(basePackages = "proyecto1.mscustomer.repository")
 public class MsCustomerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(MsCustomerApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(MsCustomerApplication.class, args);
+  }
 
 }
