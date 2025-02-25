@@ -26,5 +26,5 @@
     </root>
 
     <!-- Logs detallados para CustomerController -->
-    <logger name="proyecto1.mscustomer.rest.CustomerController" level="DEBUG"/>
+    <logger name="com.bank.mscustomer.controller.CustomerController" level="DEBUG"/>
 </configuration>

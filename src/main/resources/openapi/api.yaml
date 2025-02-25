@@ -1,177 +1,497 @@
 openapi: 3.0.1
 info:
-  title: OpenAPI definition
-  version: v0
+  title: MS Customer
+  description: Administrar los datos de clientes de banco.
+  version: 1.3.0
+  x-api-name: CustomerApi
 servers:
-- url: http://localhost:8081
-  description: Generated server url
+  - url: http://localhost:8081/v1.0
+    description: Generated server url
 tags:
-- name: Customer API
-  description: Gestión de Clientes
+  - name: Customer API
+    description: Gestión de Clientes
 paths:
-  /v1.0/customers/{id}:
+  /customers/{id}:
     get:
       tags:
-      - Customer API
+        - Customer API
       summary: Obtener cliente por ID
       description: Busca un cliente por su ID
       operationId: getCustomerById
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
-        "500":
-          description: Error interno del servidor
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/Customer'
         "200":
           description: Cliente encontrado
           content:
-            '*/*':
+            application/json:
               schema:
-                $ref: '#/components/schemas/Customer'
-        "404":
-          description: Cliente no encontrado
+                $ref: '#/components/schemas/ListCustomerResponse'
+        '400':
+          description: 'Datos no válidos'
           content:
-            '*/*':
+            application/json:
               schema:
-                $ref: '#/components/schemas/Customer'
+                $ref: '#/components/schemas/ApiResponse400'
+        '404':
+          description: 'Cliente no encontrado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse404'
+        '500':
+          description: 'Error inesperado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse500'
+  /customers:
+    get:
+      tags:
+        - Customer API
+      summary: Obtener todos los clientes
+      description: Lista todos los clientes registrados en el banco
+      operationId: getAll
+      responses:
+        "200":
+          description: Cliente encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCustomerResponse'
+        '400':
+          description: 'Datos no válidos'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse400'
+        '404':
+          description: 'Cliente no encontrado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse404'
+        '500':
+          description: 'Error inesperado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse500'
+  /customers/update:
     put:
       tags:
-      - Customer API
-      summary: Actualiza un cliente
-      description: Actualiza datos de un cliente en el sistema
+        - Customer API
+      summary: Actualizar datos de un cliente
+      description: Modifica datos de un cliente existente
       operationId: updateCustomer
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Customer'
+              $ref: '#/components/schemas/UpdateCustomerRequest'
         required: true
       responses:
-        "400":
-          description: Solicitud inválida
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/Customer'
-        "500":
-          description: Error interno del servidor
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/Customer'
         "200":
           description: Cliente actualizado correctamente
           content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Customer'
-        "404":
-          description: Cliente no encontrado
-          content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/Customer'
+                $ref: '#/components/schemas/UpdateCustomerResponse'
+        '400':
+          description: 'Datos no válidos'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse400'
+        '404':
+          description: 'Recurso inválido'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse404'
+        '500':
+          description: 'Error inesperado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse500'
+  /customers/delete/{id}:
     delete:
       tags:
-      - Customer API
+        - Customer API
       summary: Eliminar un cliente
       description: Elimina un cliente de la base de datos.
       operationId: deleteCustomer
       parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
+          description: "id cliente que se eliminará <br> formato: Cadena"
+          required: true
+          schema:
+            type: string
+            example: '928394yy23423'
       responses:
-        "400":
-          description: Solicitud inválida
-        "500":
-          description: Error interno del servidor
-        "200":
-          description: Cliente eliminado correctamente
-        "404":
-          description: Cliente no encontrado
-  /v1.0/customers:
-    get:
-      tags:
-      - Customer API
-      summary: Obtener todos los clientes
-      description: Lista todos los clientes registrados en el banco
-      operationId: getAllCustomers
-      responses:
-        "500":
-          description: Error interno del servidor
+        '200':
+          description: 'Operación exitosa'
           content:
-            '*/*':
+            application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Customer'
-        "200":
-          description: Clientes obtenidos correctamente
+                $ref: '#/components/schemas/DeleteCustomerResponse'
+        '400':
+          description: 'Datos no válidos'
           content:
-            '*/*':
+            application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Customer'
+                $ref: '#/components/schemas/ApiResponse400'
+        '404':
+          description: 'Recurso inválido'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse404'
+        '500':
+          description: 'Error inesperado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse500'
+
+  /customers/create:
     post:
       tags:
-      - Customer API
-      summary: Crear un nuevo cliente
-      description: Registra un nuevo cliente en el sistema
+        - Customer API
+      summary: Registrar un cliente
+      description: Registra un nuevo cliente en el banco
       operationId: createCustomer
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Customer'
+              $ref: '#/components/schemas/CreateCustomerRequest'
         required: true
+      responses:
+        '200':
+          description: 'Operación exitosa'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCustomerResponse'
+        '400':
+          description: 'Datos no válidos'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse400'
+        '404':
+          description: 'Recurso inválido'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse404'
+        '500':
+          description: 'Error inesperado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse500'
+  /customers/summary/{customerId}:
+    get:
+      tags:
+        - Customer API
+      summary: Obtener resumen consolidado del cliente
+      description: Muestra cuentas y créditos del cliente
+      operationId: getCustomerSummary
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         "500":
           description: Error interno del servidor
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/Customer'
-        "201":
-          description: Cliente creado exitosamente
+                $ref: '#/components/schemas/CustomerSummary'
+        "404":
+          description: Cliente no encontrado
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/Customer'
-        "400":
-          description: "Error en la solicitud, cliente ya existe"
+                $ref: '#/components/schemas/CustomerSummary'
+        "200":
+          description: Resumen del cliente obtenido exitosamente
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/Customer'
+                $ref: '#/components/schemas/CustomerSummary'
 components:
   schemas:
-    Customer:
+    ListCustomerResponse:
+      type: object
+      description: "Respuesta del obtener registro"
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListCustomerDataResponse'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+    ListCustomerDataResponse:
+      type: object
+      description: "Datos a obtener de cliente"
+      properties:
+        id:
+          type: string
+          description: "descripción: codigo de cliente <br> formato: Cadena"
+          example: '67b5170ca0b2'
+        name:
+          type: string
+          description: "descripción: nombre del cliente <br> formato: Cadena"
+          example: 'Alicia Villon Coveñas'
+        type:
+          type: string
+          description: "descripción: tipo de cliente (Personal o Empresarial) <br> formato: Cadena"
+          example: 'Personal'
+        numberDocument:
+          type: string
+          description: "descripción: número de documento del cliente <br> formato: Cadena"
+          example: '44556543'
+        email:
+          type: string
+          description: "descripción: correo del cliente <br> formato: Cadena"
+          example: 'villon.alicia@gmail.com'
+        profile:
+          type: string
+          description: "descripción: Perfil del cliente <br> formato: Cadena"
+          example: 'VIP'
+    CreateCustomerRequest:
+      type: object
+      description: "Request para la creación de cliente"
+      properties:
+        id:
+          type: string
+          description: "descripción: codigo de cliente <br> formato: Cadena"
+          example: '67b5170ca0b2'
+        name:
+          type: string
+          description: "descripción: nombre del cliente <br> formato: Cadena"
+          example: 'Alicia Villon Coveñas'
+        type:
+          type: string
+          description: "descripción: tipo de cliente (Personal o Empresarial) <br> formato: Cadena"
+          example: 'Personal'
+        numberDocument:
+          type: string
+          description: "descripción: número de documento del cliente <br> formato: Cadena"
+          example: '44556543'
+        email:
+          type: string
+          description: "descripción: correo del cliente <br> formato: Cadena"
+          example: 'villon.alicia@gmail.com'
+        profile:
+          type: string
+          description: "descripción: Perfil del cliente <br> formato: Cadena"
+          example: 'VIP'
+    CreateCustomerResponse:
+      type: object
+      description: "Respuesta del registro del cliente"
+      properties:
+        data:
+          $ref: '#/components/schemas/CreateCustomerDataResponse'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+    CreateCustomerDataResponse:
+      type: object
+      description: "Datos de respuesta del registro del cliente"
+      properties:
+        id:
+          type: string
+          description: "descripción: id cliente <br> formato: Cadena"
+          example: '000001'
+    UpdateCustomerRequest:
+      type: object
+      description: "Request para la actualización de cliente"
+      properties:
+        id:
+          type: string
+          description: "descripción: codigo de cliente <br> formato: Cadena"
+          example: '67b5170ca0b2'
+        name:
+          type: string
+          description: "descripción: nombre del cliente <br> formato: Cadena"
+          example: 'Alicia Villon Coveñas'
+        type:
+          type: string
+          description: "descripción: tipo de cliente (Personal o Empresarial) <br> formato: Cadena"
+          example: 'Personal'
+        numberDocument:
+          type: string
+          description: "descripción: número de documento del cliente <br> formato: Cadena"
+          example: '44556543'
+        email:
+          type: string
+          description: "descripción: correo del cliente <br> formato: Cadena"
+          example: 'villon.alicia@gmail.com'
+        profile:
+          type: string
+          description: "descripción: Perfil del cliente <br> formato: Cadena"
+          example: 'VIP'
+    UpdateCustomerResponse:
+      type: object
+      description: "Respuesta de la actualización del cliente"
+      properties:
+        data:
+          $ref: '#/components/schemas/UpdateCustomerDataResponse'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+    UpdateCustomerDataResponse:
+      type: object
+      description: "Datos de respuesta de la actualización del cliente"
+      properties:
+        id:
+          type: string
+          description: "descripción: id cliente <br> formato: Cadena"
+          example: '000001'
+    DeleteCustomerResponse:
+      type: object
+      description: "Respuesta de eliminación del cliente"
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+    Account:
       type: object
       properties:
         id:
           type: string
-        name:
+        number:
           type: string
         type:
           type: string
-        numberDocument:
+        customerId:
           type: string
-        email:
+        balance:
+          type: number
+          format: double
+        transactionLimit:
+          type: integer
+          format: int32
+        commissionFee:
+          type: number
+          format: double
+    Credit:
+      type: object
+      properties:
+        id:
           type: string
+        customerId:
+          type: string
+        creditType:
+          type: string
+        creditLimit:
+          type: number
+          format: double
+        currentDebt:
+          type: number
+          format: double
+        availableLimit:
+          type: number
+          format: double
+    CustomerSummary:
+      type: object
+      properties:
+        customerId:
+          type: string
+        name:
+          type: string
+        documentNumber:
+          type: string
+        type:
+          type: string
+        profile:
+          type: string
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Account'
+        credits:
+          type: array
+          items:
+            $ref: '#/components/schemas/Credit'
+    Metadata:
+      type: object
+      description: "Indica que la solicitud ha tenido éxito"
+      properties:
+        status:
+          type: integer
+          description: "descripción: códigos de estado de respuesta HTTP  <br> formato: numerico"
+          format: int32
+          example: 200
+        message:
+          type: string
+          description: "descripción: mensaje si el proceso fue exitoso  <br> formato: libre"
+          example: La operación fue exitosa.
+    ApiResponse400:
+      type: object
+      description: "Respuesta que el servidor no pudo interpretar la solicitud dada una sintaxis inválida"
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ApiDataResponse400'
+    ApiDataResponse400:
+      type: object
+      description: "Respuesta que el servidor no pudo interpretar la solicitud dada una sintaxis inválida"
+      properties:
+        status:
+          type: integer
+          description: "descripción: códigos de estado de respuesta HTTP  <br> formato: numerico"
+          format: int32
+          example: 400
+        message:
+          type: string
+          description: "descripción: mensaje de respuesta HTTP  <br> formato: libre"
+          example: Los datos ingresados son inválidos.
+    ApiResponse404:
+      type: object
+      description: "La petición se ha completado con éxito pero su respuesta no tiene ningún contenido"
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ApiDataResponse404'
+    ApiDataResponse404:
+      type: object
+      description: "La petición se ha completado con éxito pero su respuesta no tiene ningún contenido"
+      properties:
+        status:
+          type: integer
+          description: "descripción: códigos de estado de respuesta HTTP  <br> formato: numerico"
+          format: int32
+          example: 404
+        message:
+          type: string
+          description: "descripción: mensaje de respuesta HTTP  <br> formato: libre"
+          example: No se encontró contenido.
+    ApiResponse500:
+      type: object
+      description: "El servidor ha encontrado una situación que no sabe cómo manejarla"
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ApiDataResponse500'
+    ApiDataResponse500:
+      type: object
+      description: "El servidor ha encontrado una situación que no sabe cómo manejarla"
+      properties:
+        status:
+          type: integer
+          description: "descripción: códigos de estado de respuesta HTTP  <br> formato: numerico"
+          format: int32
+          example: 500
+        message:
+          type: string
+          description: "descripción: mensaje de respuesta HTTP  <br> formato: libre"
+          example: >-
+            Ocurrió un error no esperado, por favor comuníquese con el área de
+            soporte.            

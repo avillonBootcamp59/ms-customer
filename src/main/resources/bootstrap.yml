@@ -13,4 +13,24 @@ springdoc:
   api-docs:
     enabled: true
   swagger-ui:
+    enabled: true
     path: /swagger-ui.html
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      customerService:
+        slidingWindowSize: 50
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 5
+        slowCallDurationThreshold: 2s
+        slowCallRateThreshold: 50
+        registerHealthIndicator: true
+
+  timelimiter:
+    instances:
+      customerService:
+        timeoutDuration: 2s
+
+
