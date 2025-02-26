@@ -10,7 +10,6 @@ import com.bank.mscustomer.entity.CustomerEntity;
 import com.bank.mscustomer.mapper.CustomerConverterMapper;
 import com.bank.mscustomer.model.*;
 import com.bank.mscustomer.util.MetadataExtended;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +45,14 @@ public class CustomerServiceImpl implements CustomersApiDelegate {
   @Autowired
   AccountClient accountClient;
 
-  public CustomerServiceImpl(  CustomerRepository customerRepository) {
+  public CustomerServiceImpl(  CustomerRepository customerRepository,
+                               CustomerConverterMapper customerConverterMapper,
+                               CreditClient creditClient,
+                               AccountClient accountClient) {
     this.customerRepository = customerRepository;
+    this.customerConverterMapper = customerConverterMapper;
+    this.creditClient = creditClient;
+    this.accountClient = accountClient;
   }
 
   @Override
@@ -58,46 +63,53 @@ public class CustomerServiceImpl implements CustomersApiDelegate {
   @Override
   public Mono<ResponseEntity<CreateCustomerResponse>> createCustomer(
           Mono<CreateCustomerRequest> createCustomerRequest, ServerWebExchange exchange) {
+
     return createCustomerRequest.flatMap(request ->
-          customerRepository.findByNumberDocument(request.getNumberDocument())
-                  .flatMap(existing -> Mono.error(new ResponseStatusException(
-                          HttpStatus.BAD_REQUEST, "Cliente ya registrado con este documento.")))
-                  .switchIfEmpty(Mono.defer(() -> {
-                    CustomerEntity customer = new CustomerEntity(
-                              request.getId(),
-                              request.getName(),
-                              request.getType(),
-                              request.getNumberDocument(),
-                              request.getEmail(),
-                              request.getProfile()
-                      );
-                    return customerRepository.save(customer);
-                  }))
-                  .map(savedCustomer -> {
-                    CreateCustomerDataResponse dataResponse = new CreateCustomerDataResponse();
-                    dataResponse.setId(dataResponse.getId());
+      customerRepository.findByNumberDocument(request.getNumberDocument())
+              .flatMap(existing -> Mono.error(
+                      new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cliente ya registrado con este documento.")))
+              .switchIfEmpty(Mono.defer(() -> {
+                CustomerEntity customerEntity = new CustomerEntity(
+                    request.getId(),
+                    request.getName(),
+                    request.getType(),
+                    request.getNumberDocument(),
+                    request.getEmail(),
+                    request.getProfile()
+                );
+                return customerRepository.save(customerEntity);
+              }))
+              .cast(CustomerEntity.class)
+              .map(savedCustomer -> {
+                CreateCustomerDataResponse dataResponse = new CreateCustomerDataResponse();
+                dataResponse.setId(savedCustomer.getId());
 
-                    CreateCustomerResponse response = new CreateCustomerResponse();
-                    response.setData(dataResponse);
-                    response.setMetadata(new MetadataExtended(200, "Cliente creado exitosamente"));
+                CreateCustomerResponse response = new CreateCustomerResponse();
+                response.setData(dataResponse);
+                response.setMetadata(new MetadataExtended(200, "Operación exitosa"));
 
-                    return ResponseEntity.ok(response);
-                  })
-      );
+                return ResponseEntity.ok(response);
 
-
+              })
+    );
   }
+
 
   @Override
   public Mono<ResponseEntity<DeleteCustomerResponse>> deleteCustomer(String id, ServerWebExchange exchange) {
     return customerRepository.findById(id)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado")))
-            .flatMap(existingCustomer -> customerRepository.delete(existingCustomer)
-                    .then(Mono.just(ResponseEntity.ok(new DeleteCustomerResponse()
-                            .metadata(new MetadataExtended(200, "Cliente eliminado correctamente")))))
+            .flatMap(existingCustomer ->
+                customerRepository.delete(existingCustomer)
+                    .then(Mono.defer(() -> {
+                      DeleteCustomerResponse response = new DeleteCustomerResponse();
+                      response.setMetadata(new MetadataExtended(200, "Cliente eliminado correctamente"));
+                      return Mono.just(ResponseEntity.ok(response));
+                    }))
             );
-
   }
+
+
 
   @Override
   public Mono<ResponseEntity<ListCustomerResponse>> getAll(ServerWebExchange exchange) {
@@ -108,14 +120,12 @@ public class CustomerServiceImpl implements CustomersApiDelegate {
                 return Mono.error(new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "No hay clientes registrados."));
               }
-
-              List<ListCustomerDataResponse> customerDataList =
+              List<ListCustomerDataResponse>  customerDataList =
                       customerConverterMapper.toListCustomerDataResponseList(customers);
 
               ListCustomerResponse response = new ListCustomerResponse();
               response.setData(customerDataList);
               response.setMetadata(new MetadataExtended(200, "Operación exitosa"));
-
 
               return Mono.just(ResponseEntity.ok(response));
             });
@@ -125,14 +135,19 @@ public class CustomerServiceImpl implements CustomersApiDelegate {
   @Override
   public Mono<ResponseEntity<ListCustomerResponse>> getCustomerById(String id, ServerWebExchange exchange) {
     return customerRepository.findById(id)
-            .map(customer -> {
-              ListCustomerResponse response = new ListCustomerResponse();
-              response.setData(List.of(customerConverterMapper.toListCustomerDataResponse(customer)));
-              response.setMetadata(new MetadataExtended(200, "Cliente encontrado"));
+          .flatMap(customer -> {
+            ListCustomerDataResponse customerData = customerConverterMapper.toListCustomerDataResponse(customer);
+            if (customerData == null) {
+              return Mono.error(new RuntimeException("Error en el mapeo del cliente"));
+            }
+            ListCustomerResponse response = new ListCustomerResponse();
+            response.setData(List.of(customerData));
+            response.setMetadata(new MetadataExtended(200, "Cliente encontrado"));
 
-              return ResponseEntity.ok(response);
-            })
-            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado")));
+            return Mono.just(ResponseEntity.ok(response));
+          })
+          .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado")));
+
 
   }
 
@@ -148,7 +163,6 @@ public class CustomerServiceImpl implements CustomersApiDelegate {
             Mono<List<CreditDTO>> credits = creditClient.getCreditProductsByCustomer(customerId)
                       .collectList()
                       .defaultIfEmpty(List.of());
-
             return Mono.zip(accounts, credits)
                       .map(tuple -> {
                         CustomerSummaryDTO summaryDTO = new CustomerSummaryDTO();
@@ -184,8 +198,10 @@ public class CustomerServiceImpl implements CustomersApiDelegate {
 
                       return customerRepository.save(existingCustomer)
                               .map(updatedCustomer -> {
+                                UpdateCustomerDataResponse dataResponse = new UpdateCustomerDataResponse();
+                                dataResponse.setId(updatedCustomer.getId());
                                 UpdateCustomerResponse response = new UpdateCustomerResponse();
-                                response.setData(customerConverterMapper.toUpdateCustomerDataResponse(updatedCustomer));
+                                response.setData(dataResponse);
                                 response.setMetadata(new MetadataExtended(200, "Cliente actualizado exitosamente"));
                                 return ResponseEntity.ok(response);
                               });
@@ -194,78 +210,5 @@ public class CustomerServiceImpl implements CustomersApiDelegate {
 
   }
 
-
-
-  /**
-  * Obtiene un cliente por ID.
-  */
-  /*@Override
-  public Mono<Customer> getCustomer(String id) {
-    return customerRepository.findById(id)
-    .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado")));
-  }*/
-
-  /**
-  * Crea un nuevo cliente.
-  */
- /* @Override
-  public Mono<Customer> createCustomer(Customer customer) {
-    return customerRepository.findByNumberDocument(customer.getNumberDocument())
-    .flatMap(existing -> Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST,
-        "Cliente ya registrado con este documento.")))
-    .switchIfEmpty(Mono.defer(() -> customerRepository.save(customer)))
-    .cast(Customer.class);
-  }
-*/
-
-  /**
-  * Actualiza los datos de un cliente existente.
-  */
-  /*@Override
-  public Mono<Customer> updateCustomer(String id, Customer updatedCustomer) {
-    return customerRepository.findById(id)
-    .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado")))
-    .flatMap(existingCustomer -> {
-      existingCustomer.setName(updatedCustomer.getName());
-      existingCustomer.setNumberDocument(updatedCustomer.getNumberDocument());
-      existingCustomer.setType(updatedCustomer.getType());
-      existingCustomer.setProfile(updatedCustomer.getProfile());
-      return customerRepository.save(existingCustomer);
-    });
-  }*/
-
-
-  /**
-  * Elimina un cliente por ID.
-  */
-  /*@Override
-  public Mono<Void> deleteCustomer(String id) {
-    return customerRepository.findById(id)
-    .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado")))
-    .flatMap(existingCustomer -> customerRepository.deleteById(id));
-  }
-
-  @Override
-  public Mono<CustomerSummaryDTO> getCustomerSummary(String customerId) {
-    return customerRepository.findById(customerId)
-            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado")))
-            .flatMap(customer -> {
-              Mono<List<AccountDTO>> accounts = accountClient.getAccountsByCustomer(
-                      customerId).collectList().defaultIfEmpty(List.of()); ;
-              Mono<List<CreditDTO>> credits = creditClient.getCreditProductsByCustomer(
-                      customerId).collectList().defaultIfEmpty(List.of()); ;
-
-              return Mono.zip(accounts, credits)
-                      .map(tuple -> new CustomerSummaryDTO(
-                              customer.getId(),
-                              customer.getName(),
-                              customer.getNumberDocument(),
-                              customer.getType(),
-                              customer.getProfile(),
-                              tuple.getT1(), // Lista de cuentas
-                              tuple.getT2()  // Lista de créditos
-                      ));
-            });
-  }
-*/
 }
+

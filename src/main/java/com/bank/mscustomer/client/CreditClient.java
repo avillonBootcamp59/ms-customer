@@ -39,4 +39,6 @@ public class CreditClient {
     logger.warn("Fallback activado para getAccountsByCustomer debido a error: {}", ex.getMessage());
     return Flux.just(new CreditDTO("fallback", customerId, "Cuenta no disponible", 0, 0, 0.0));
   }
+
+
 }

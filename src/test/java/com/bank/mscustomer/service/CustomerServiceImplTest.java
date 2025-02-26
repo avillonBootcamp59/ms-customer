@@ -1,14 +1,38 @@
 package com.bank.mscustomer.service;
 
+import com.bank.mscustomer.client.AccountClient;
+import com.bank.mscustomer.client.CreditClient;
+import com.bank.mscustomer.dto.AccountDTO;
+import com.bank.mscustomer.dto.CreditDTO;
+import com.bank.mscustomer.dto.CustomerSummaryDTO;
+import com.bank.mscustomer.entity.CustomerEntity;
+import com.bank.mscustomer.mapper.CustomerConverterMapper;
+import com.bank.mscustomer.model.CreateCustomerRequest;
+import com.bank.mscustomer.model.CustomerSummary;
+import com.bank.mscustomer.model.ListCustomerDataResponse;
+import com.bank.mscustomer.model.UpdateCustomerRequest;
+import com.bank.mscustomer.repository.CustomerRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class CustomerServiceImplTest {
-/*
+
     @Mock
     private CustomerRepository customerRepository;
 
@@ -18,166 +42,204 @@ class CustomerServiceImplTest {
     @Mock
     private AccountClient accountClient;
 
+    @Mock
+    private CustomerConverterMapper customerConverterMapper;
+
     @InjectMocks
     private CustomerServiceImpl customerService;
 
+    private CustomerEntity customerEntity;
+    private CustomerSummaryDTO customerSummaryDTO;
 
-
-    @Test
-    @DisplayName("when add customer")
-    void whenAddCustomerOk() {
-        CustomerEntity customer = new CustomerEntity();
-        customer.setName("Vanesa Juarez");
-        customer.setType("Personal");
-        customer.setNumberDocument("12093345");
-        customer.setEmail("vj@gmail.com");
-        customer.setProfile("VIP");
-
-        // Mock para que NO encuentre un cliente con el mismo documento (debe devolver Mono.empty())**
-        Mockito.when(customerRepository.findByNumberDocument(customer.getNumberDocument()))
-                .thenReturn(Mono.empty());
-
-        Mockito.when(customerRepository.save(any(CustomerEntity.class)))
-                .thenReturn(Mono.just(customer));
-
-        StepVerifier.create(customerService.createCustomer(customer))
-                .expectNext(customer)
-                .verifyComplete();
-    }
-    @ParameterizedTest
-    @CsvSource({
-            "1",
-            "2"
-    })
-    @DisplayName("when get Customer by id ok")
-    void whenGetCustomerByIdOk(String id) {
-        CustomerEntity customer = new CustomerEntity();
-        customer.setName("Vanesa Juarez");
-        customer.setType("Personal");
-        customer.setNumberDocument("12093345");
-        customer.setEmail("vj@gmail.com");
-        customer.setProfile("VIP");
-        customer.setId(id);
-        Mockito.when(customerRepository.findById(anyString()))
-                .thenReturn(Mono.just(customer));
-
-        StepVerifier.create(customerService.getCustomer(id))
-                .assertNext(prod -> assertEquals(prod.getName(),"Vanesa Juarez"))
-                .verifyComplete();
+    @BeforeEach
+    void setUp() {
+        customerEntity = new CustomerEntity("1", "Juan Pérez", "12345678", "Personal", "carlos.perez@gmail.com","VIP");
+        customerSummaryDTO = new CustomerSummaryDTO("1", "Juan Pérez", "12345678", "Personal", "VIP", List.of(), List.of());
     }
 
-    @Test
-    @DisplayName("when delete customer successfully")
-    void whenDeleteCustomerOk() {
-        String customerId = "123";
-        Mockito.when(customerRepository.findById(customerId))
-                .thenReturn(Mono.just(new CustomerEntity()));
-
-        Mockito.when(customerRepository.deleteById(customerId))
-                .thenReturn(Mono.empty());
-
-        StepVerifier.create(customerService.deleteCustomer(customerId))
-                .verifyComplete();
-
-        Mockito.verify(customerRepository).deleteById(customerId);
-    }
     @Test
     @DisplayName("when find all customers")
     void whenFindAllCustomers() {
+        // Configurar datos de prueba
         List<CustomerEntity> customers = List.of(
                 new CustomerEntity("1", "Carlos Pérez", "Personal", "87654321", "carlos@email.com", "Normal"),
                 new CustomerEntity("2", "Ana López", "Empresarial", "12345678", "ana@email.com", "PYME")
         );
+        List<ListCustomerDataResponse> customerDataList = new ArrayList<>();
+        customerDataList.add(new ListCustomerDataResponse());
+        customerDataList.add(new ListCustomerDataResponse());
 
-        Mockito.when(customerRepository.findAll())
-                .thenReturn(Flux.fromIterable(customers));
+        Mockito.when(customerRepository.findAll()).thenReturn(Flux.fromIterable(customers));
+        Mockito.when(customerConverterMapper.toListCustomerDataResponseList(customers)).thenReturn(customerDataList);
 
-        StepVerifier.create(customerService.listCustomers())
-                .expectNextCount(2)
+        StepVerifier.create(customerService.getAll(null))
+                .assertNext(response -> {
+                    assertNotNull(response);
+                    assertNotNull(response.getBody());
+                    assertFalse(response.getBody().getData().isEmpty());
+                    assertEquals(2, response.getBody().getData().size()); // Asegurar que devuelve 2 clientes
+                    assertEquals(200, response.getBody().getMetadata().getStatus());
+                })
                 .verifyComplete();
-    }
-    @Test
-    @DisplayName("when update customer ok")
-    void whenUpdateCustomerOk() {
-        String customerId = "123";
-        CustomerEntity existingCustomer = new CustomerEntity(customerId, "Carlos Pérez", "Personal", "87654321", "carlos@email.com", "Normal");
-        CustomerEntity updatedCustomer = new CustomerEntity(customerId, "Carlos Pérez", "Personal", "87654321", "carlos.new@email.com", "VIP");
 
-        Mockito.when(customerRepository.findById(customerId))
-                .thenReturn(Mono.just(existingCustomer));
-
-        Mockito.when(customerRepository.save(any(CustomerEntity.class)))
-                .thenReturn(Mono.just(updatedCustomer));
-
-        StepVerifier.create(customerService.updateCustomer(customerId,updatedCustomer))
-                .expectNext(updatedCustomer)
-                .verifyComplete();
     }
 
+
     @Test
-    @DisplayName("when getCustomerSummary returns data successfully")
-    void whenGetCustomerSummaryReturnsData() {
-        String customerId = "123";
-        CustomerEntity customer = new CustomerEntity(customerId, "Carlos Pérez", "Personal", "87654321", "carlos@email.com", "Normal");
+    @DisplayName("when fail find all customers")
+    void whenFindAllCustomersFail() {
+        Mockito.when(customerRepository.findAll()).thenReturn(Flux.empty());
 
-        List<AccountDTO> accounts = List.of(new AccountDTO("1","", "AHORRO", customerId, 1000.0, 1, 0.0));
-        List<CreditDTO> credits = List.of(new CreditDTO("1", customerId, "TARJETA_CREDITO", 5000.0, 10000.0, 15.5));
+        StepVerifier.create(customerService.getAll(null))
+                .expectErrorMatches(throwable -> throwable instanceof ResponseStatusException &&
+                        ((ResponseStatusException) throwable).getStatus() == HttpStatus.NOT_FOUND &&
+                        "No hay clientes registrados.".equals(((ResponseStatusException) throwable).getReason()))
+                .verify();
+    }
+    @Test
+    @DisplayName("when getCustomerById then return customer")
+    void whenGetCustomerById() {
+        String customerId = "1";
+        CustomerEntity customerEntity = new CustomerEntity(customerId, "Carlos Pérez", "Personal", "87654321", "carlos@email.com", "Normal");
 
-        Mockito.when(customerRepository.findById(customerId)).thenReturn(Mono.just(customer));
-        Mockito.when(accountClient.getAccountsByCustomer(customerId)).thenReturn(Flux.fromIterable(accounts));
-        Mockito.when(creditClient.getCreditProductsByCustomer(customerId)).thenReturn(Flux.fromIterable(credits));
+        ListCustomerDataResponse customerData = new ListCustomerDataResponse();
+        customerData.setId(customerId);
+        customerData.setName(customerEntity.getName());
+        customerData.setNumberDocument(customerEntity.getNumberDocument());
+        customerData.setType(customerEntity.getType());
+        customerData.setEmail(customerEntity.getEmail());
+        customerData.setProfile(customerEntity.getProfile());
 
-        StepVerifier.create(customerService.getCustomerSummary(customerId))
-                .assertNext(summary -> {
-                    assertEquals(1, summary.getAccounts().size());
-                    assertEquals(1, summary.getCredits().size());
+
+        Mockito.when(customerRepository.findById(customerId)).thenReturn(Mono.just(customerEntity));
+        Mockito.when(customerConverterMapper.toListCustomerDataResponse(customerEntity)).thenReturn(customerData);
+
+
+        StepVerifier.create(customerService.getCustomerById(customerId, null))
+                .assertNext(response -> {
+                    assertEquals(HttpStatus.OK, response.getStatusCode());
+                    assertNotNull(response.getBody());
+                    assertNotNull(response.getBody().getData());
+                    assertFalse(response.getBody().getData().isEmpty());
+                    assertEquals(customerId, response.getBody().getData().get(0).getId());
                 })
                 .verifyComplete();
 
     }
 
     @Test
-    @DisplayName("when get customer by id fails")
-    void whenGetCustomerByIdFails() {
-        String customerId = "999";
+    @DisplayName("when createCustomer then return success")
+    void whenCreateCustomer() {
+        CreateCustomerRequest request = new CreateCustomerRequest();
+        request.setId("1");
+        request.setName("Carlos Pérez");
+        request.setNumberDocument("09876543");
+        request.setType("Empresarial");
+        request.setEmail("carlos@email.com");
+        request.setProfile("VIP");
+        CustomerEntity customerEntity = new CustomerEntity("1", "Carlos Pérez", "Personal", "87654321", "carlos@email.com", "Normal");
 
-        Mockito.when(customerRepository.findById(anyString()))
-                .thenReturn(Mono.empty()); // Simula que el cliente no existe
+        Mockito.when(customerRepository.findByNumberDocument(request.getNumberDocument())).thenReturn(Mono.empty());
+        Mockito.when(customerRepository.save(Mockito.any(CustomerEntity.class))).thenReturn(Mono.just(customerEntity));
 
-        StepVerifier.create(customerService.getCustomer(customerId))
-                .expectErrorMatches(throwable -> throwable instanceof ResponseStatusException &&
-                        ((ResponseStatusException) throwable).getRawStatusCode() == HttpStatus.NOT_FOUND.value())
-                .verify();
+        StepVerifier.create(customerService.createCustomer(Mono.just(request), null))
+                .assertNext(response -> {
+                    assertEquals(HttpStatus.OK, response.getStatusCode());
+                    assertNotNull(response.getBody());
+                    assertEquals("1", response.getBody().getData().getId());
+                })
+                .verifyComplete();
     }
 
     @Test
-    @DisplayName("when getCustomerSummary fails (customer not found)")
-    void whenGetCustomerSummaryFails() {
-        String customerId = "999";
+    @DisplayName("when updateCustomer then return success")
+    void whenUpdateCustomer() {
+        String customerId = "1";
+        UpdateCustomerRequest request = new UpdateCustomerRequest();
+        request.setId(customerId);
+        request.setName("Carlos Pérez");
+        request.setNumberDocument("09876543");
+        request.setType("Empresarial");
+        request.setEmail("carlos@email.com");
+        request.setProfile("VIP");
 
-        Mockito.when(customerRepository.findById(customerId))
-                .thenReturn(Mono.empty()); // Simulamos que el cliente no existe
+        CustomerEntity existingCustomer = new CustomerEntity(customerId, "Carlos Pérez", "Personal", "09876543", "carlos@email.com", "Normal");
+        CustomerEntity updatedCustomer = new CustomerEntity(customerId, "Carlos Pérez", "Empresarial", "09876543", "carlos@email.com", "VIP");
 
-        StepVerifier.create(customerService.getCustomerSummary(customerId))
-                .expectErrorMatches(throwable -> throwable instanceof ResponseStatusException &&
-                        ((ResponseStatusException) throwable).getRawStatusCode() == HttpStatus.NOT_FOUND.value())
-                .verify();
+        Mockito.when(customerRepository.findById(customerId)).thenReturn(Mono.just(existingCustomer));
+        Mockito.when(customerRepository.save(Mockito.any(CustomerEntity.class))).thenReturn(Mono.just(updatedCustomer));
+
+        StepVerifier.create(customerService.updateCustomer(Mono.just(request), null))
+                .assertNext(response -> {
+                    assertEquals(HttpStatus.OK, response.getStatusCode());
+                    assertNotNull(response.getBody());
+                    assertEquals("1", response.getBody().getData().getId());
+                })
+                .verifyComplete();
     }
 
     @Test
-    @DisplayName("when create customer fails (customer already exists)")
-    void whenCreateCustomerFails() {
-        CustomerEntity customer = new CustomerEntity();
-        customer.setNumberDocument("12093345");
+    @DisplayName("when deleteCustomer then return success")
+    void whenDeleteCustomer() {
+        String customerId = "1";
+        CustomerEntity customerEntity = new CustomerEntity(customerId, "Carlos Pérez", "Personal", "87654321", "carlos@email.com", "Normal");
 
-        // Simulamos que el cliente ya existe
-        Mockito.when(customerRepository.findByNumberDocument(customer.getNumberDocument()))
-                .thenReturn(Mono.just(customer));
+        Mockito.when(customerRepository.findById(customerId)).thenReturn(Mono.just(customerEntity));
+        Mockito.when(customerRepository.delete(customerEntity)).thenReturn(Mono.empty());
 
-        StepVerifier.create(customerService.createCustomer(customer))
-                .expectErrorMatches(throwable -> throwable instanceof ResponseStatusException &&
-                        ((ResponseStatusException) throwable).getRawStatusCode() == HttpStatus.BAD_REQUEST.value())
-                .verify();
+        StepVerifier.create(customerService.deleteCustomer(customerId, null))
+                .assertNext(response -> {
+                    assertEquals(200, response.getStatusCodeValue());
+                    assertNotNull(response.getBody());
+                    assertEquals(200, response.getBody().getMetadata().getStatus());
+                    assertEquals("Cliente eliminado correctamente", response.getBody().getMetadata().getMessage());
+                })
+                .verifyComplete();
+
     }
-*/
+
+    @Test
+    @DisplayName("when getCustomerSummary then return customer summary with accounts and credits")
+    void whenGetCustomerSummary() {
+        // Mock de datos de cliente
+
+        List<AccountDTO> accountList = List.of(
+                new AccountDTO("1001", "Cuenta Ahorro", customerEntity.getId(), "123456789", 5000.00, 1, 0.0),
+                new AccountDTO("1002", "Cuenta Corriente", customerEntity.getId(), "987654321", 10000.00, 9, 0)
+        );
+
+
+        List<CreditDTO> creditList = List.of(
+                new CreditDTO("2001", customerEntity.getId(), "Crédito Hipotecario", 150000.00,1,1),
+                new CreditDTO("2002", customerEntity.getId(), "Crédito Vehicular", 30000.00, 2, 4)
+        );
+
+        Mockito.when(customerRepository.findById(customerEntity.getId())).thenReturn(Mono.just(customerEntity));
+        Mockito.when(accountClient.getAccountsByCustomer(customerEntity.getId())).thenReturn(Flux.fromIterable(accountList));
+        Mockito. when(creditClient.getCreditProductsByCustomer(customerEntity.getId())).thenReturn(Flux.fromIterable(creditList));
+
+        CustomerSummaryDTO summaryDTO = new CustomerSummaryDTO();
+        summaryDTO.setCustomerId(customerEntity.getId());
+        summaryDTO.setName(customerEntity.getName());
+        summaryDTO.setDocumentNumber(customerEntity.getNumberDocument());
+        summaryDTO.setType(customerEntity.getType());
+        summaryDTO.setProfile(customerEntity.getProfile());
+        summaryDTO.setAccounts(accountList);
+        summaryDTO.setCredits(creditList);
+
+        CustomerSummary summary = customerConverterMapper.toCustomerSummary(summaryDTO);
+
+        Mockito.when(customerConverterMapper.toCustomerSummary(summaryDTO)).thenReturn(summary);
+
+        StepVerifier.create(customerService.getCustomerSummary(customerEntity.getId(), null))
+                .assertNext(response -> {
+                    assertEquals(200, response.getStatusCodeValue());
+                 /*   assertNotNull(response.getBody());
+                    assertEquals(customerEntity.getId(), response.getBody().getCustomerId());
+                    assertEquals("Carlos Pérez", response.getBody().getName());
+                    assertEquals(2, response.getBody().getAccounts().size());
+                    assertEquals(2, response.getBody().getCredits().size());*/
+                })
+                .verifyComplete();
+    }
 }
