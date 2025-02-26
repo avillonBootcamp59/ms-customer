@@ -5,7 +5,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>java.com.proyecto1</groupId>
+	<groupId>java.com.bank.mscustomer</groupId>
 	<artifactId>ms-customer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ms-customer</name>
@@ -18,7 +18,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<sonar.host.url>http://localhost:9000</sonar.host.url>
-
 	</properties>
 
 	<dependencyManagement>
@@ -47,6 +46,7 @@
 			<artifactId>springdoc-openapi-webflux-ui</artifactId>
 			<version>1.6.14</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
@@ -84,23 +84,15 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 		</dependency>
-
-		<!-- Dependencias para pruebas -->
+		<!-- Spring Boot Test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>io.projectreactor</groupId>
-			<artifactId>reactor-test</artifactId>
+		<dependency> <groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.jetbrains</groupId>
@@ -117,6 +109,48 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.resilience4j</groupId>
+			<artifactId>resilience4j-spring-boot2</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.resilience4j</groupId>
+			<artifactId>resilience4j-spring</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.github.resilience4j</groupId>
+			<artifactId>resilience4j-reactor</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+		<dependency>
+		<groupId>io.projectreactor</groupId>
+		<artifactId>reactor-test</artifactId>
+		<scope>test</scope>
+	</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>1.5.5.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>1.6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -129,6 +163,30 @@
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>1.5.5.Final</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>1.18.30</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok-mapstruct-binding</artifactId>
+							<version>0.2.0</version>
+						</path>
+						<!-- other annotation processors -->
+						<path>
+							<groupId>org.openapitools</groupId>
+							<artifactId>jackson-databind-nullable</artifactId>
+							<version>0.2.3</version>
+						</path>
+					</annotationProcessorPaths>
+
 				</configuration>
 			</plugin>
 
@@ -136,7 +194,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>2.7.18</version> <!-- Ajusta la versión según tu configuración -->
+				<version>2.7.18</version>
 			</plugin>
 
 			<plugin>
@@ -186,10 +244,14 @@
 				<!-- Umbrales de Cobertura -->
 				<configuration>
 					<excludes>
-						<exclude>proyecto1/mscustomer/MsCustomerApplication.class</exclude>
-						<exclude>proyecto1/mscustomer/util/GlobalExceptionHandler.class</exclude>
-						<exclude>proyecto1/mscustomer/dto/*</exclude>
-						<exclude>proyecto1/mscustomer/client/*</exclude>
+						<exclude>com/bank/mscustomer/MsCustomerApplication.class</exclude>
+						<exclude>com/bank/mscustomer/util/GlobalExceptionHandler.class</exclude>
+						<exclude>com/bank/mscustomer/dto/*</exclude>
+						<exclude>com/bank/mscustomer/client/*</exclude>
+						<exclude>com/bank/mscustomer/exception/*</exclude>
+						<exclude>org/openapitools/*</exclude>
+						<exclude>org/openapitools/configuration/*</exclude>
+						<exclude>com/bank/mscustomer/mapper/*</exclude>
 					</excludes>
 					<rules>
 						<rule>
@@ -210,6 +272,38 @@
 				<artifactId>sonar-maven-plugin</artifactId>
 				<version>3.9.1.2184</version>
 			</plugin>
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>5.3.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/api.yaml</inputSpec>
+							<generatorName>spring</generatorName>
+							<apiPackage>com.bank.mscustomer</apiPackage>
+							<modelPackage>com.bank.mscustomer.model</modelPackage>
+							<configOptions>
+								<dateLibrary>java8</dateLibrary>
+								<interfaceOnly>false</interfaceOnly>
+								<useDelegates>true</useDelegates>
+								<reactive>true</reactive>
+								<delegatePattern>true</delegatePattern>
+							</configOptions>
+							<additionalProperties>
+								<apiTests>false</apiTests>
+								<modelTests>false</modelTests>
+								<!-- Excluir archivos de prueba -->
+								<excludeTestFiles>true</excludeTestFiles>
+							</additionalProperties>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 
 		</plugins>
 	</build>

@@ -844,12 +844,12 @@ Identify and stop the process that's listening on port 8081 or configure this ap
 2025-02-12 07:00:40 [main] INFO  o.s.c.c.c.ConfigServicePropertySourceLocator - Located environment: name=ms-customer, profiles=[default], label=null, version=3dfb484c3d068d093481832eccb35ca1dfbe66dc, state=null
 2025-02-12 07:00:40 [main] INFO  o.s.c.b.c.PropertySourceBootstrapConfiguration - Located property source: [BootstrapPropertySource {name='bootstrapProperties-configClient'}, BootstrapPropertySource {name='bootstrapProperties-https://github.com/aliciaVillon/ms-admin-server-data.git/ms-customer.yml'}]
 2025-02-12 07:00:40 [main] INFO  p.mscustomer.MsCustomerApplication - No active profile set, falling back to 1 default profile: "default"
-2025-02-12 07:00:41 [main] WARN  o.s.b.w.r.c.AnnotationConfigReactiveWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [proyecto1.mscustomer.MsCustomerApplication]; nested exception is java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
+2025-02-12 07:00:41 [main] WARN  o.s.b.w.r.c.AnnotationConfigReactiveWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [com.bank.mscustomer.MsCustomerApplication]; nested exception is java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
 2025-02-12 07:00:41 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLoggingListener - 
 
 Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
 2025-02-12 07:00:41 [main] ERROR o.s.boot.SpringApplication - Application run failed
-org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [proyecto1.mscustomer.MsCustomerApplication]; nested exception is java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
+org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [com.bank.mscustomer.MsCustomerApplication]; nested exception is java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
 	at org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:612)
 	at org.springframework.context.annotation.ConfigurationClassParser.access$800(ConfigurationClassParser.java:110)
 	at org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorGroupingHandler.lambda$processGroupImports$1(ConfigurationClassParser.java:815)
@@ -869,7 +869,7 @@ org.springframework.beans.factory.BeanDefinitionStoreException: Failed to proces
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:308)
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1300)
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1289)
-	at proyecto1.mscustomer.MsCustomerApplication.main(MsCustomerApplication.java:12)
+	at com.bank.mscustomer.MsCustomerApplication.main(MsCustomerApplication.java:12)
 Caused by: java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
 	at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:338)
 	at org.springframework.context.annotation.ConditionEvaluator.getCondition(ConditionEvaluator.java:124)
@@ -897,12 +897,12 @@ Caused by: java.lang.UnsupportedClassVersionError: org/springdoc/core/conditions
 2025-02-12 07:02:10 [main] INFO  o.s.c.c.c.ConfigServicePropertySourceLocator - Located environment: name=ms-customer, profiles=[default], label=null, version=3dfb484c3d068d093481832eccb35ca1dfbe66dc, state=null
 2025-02-12 07:02:10 [main] INFO  o.s.c.b.c.PropertySourceBootstrapConfiguration - Located property source: [BootstrapPropertySource {name='bootstrapProperties-configClient'}, BootstrapPropertySource {name='bootstrapProperties-https://github.com/aliciaVillon/ms-admin-server-data.git/ms-customer.yml'}]
 2025-02-12 07:02:10 [main] INFO  p.m.MsCustomerApplicationTests - No active profile set, falling back to 1 default profile: "default"
-2025-02-12 07:02:10 [main] WARN  o.s.b.w.r.c.GenericReactiveWebApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [proyecto1.mscustomer.MsCustomerApplication]; nested exception is java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
+2025-02-12 07:02:10 [main] WARN  o.s.b.w.r.c.GenericReactiveWebApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [com.bank.mscustomer.MsCustomerApplication]; nested exception is java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
 2025-02-12 07:02:10 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLoggingListener - 
 
 Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
 2025-02-12 07:02:10 [main] ERROR o.s.boot.SpringApplication - Application run failed
-org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [proyecto1.mscustomer.MsCustomerApplication]; nested exception is java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
+org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [com.bank.mscustomer.MsCustomerApplication]; nested exception is java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
 	at org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:612)
 	at org.springframework.context.annotation.ConfigurationClassParser.access$800(ConfigurationClassParser.java:110)
 	at org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorGroupingHandler.lambda$processGroupImports$1(ConfigurationClassParser.java:815)
@@ -1017,7 +1017,7 @@ Caused by: java.lang.UnsupportedClassVersionError: org/springdoc/core/conditions
 	at org.springframework.util.ClassUtils.forName(ClassUtils.java:291)
 	at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:331)
 	... 95 common frames omitted
-2025-02-12 07:02:10 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@76f7d241] to prepare test instance [proyecto1.mscustomer.MsCustomerApplicationTests@3f1c5af9]
+2025-02-12 07:02:10 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@76f7d241] to prepare test instance [com.bank.mscustomer.MsCustomerApplicationTests@3f1c5af9]
 java.lang.IllegalStateException: Failed to load ApplicationContext
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:98)
 	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:124)
@@ -1093,7 +1093,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext
 	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
 	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
-Caused by: org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [proyecto1.mscustomer.MsCustomerApplication]; nested exception is java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
+Caused by: org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [com.bank.mscustomer.MsCustomerApplication]; nested exception is java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
 	at org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:612)
 	at org.springframework.context.annotation.ConfigurationClassParser.access$800(ConfigurationClassParser.java:110)
 	at org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorGroupingHandler.lambda$processGroupImports$1(ConfigurationClassParser.java:815)
@@ -1141,12 +1141,12 @@ Caused by: java.lang.UnsupportedClassVersionError: org/springdoc/core/conditions
 2025-02-12 07:02:19 [main] INFO  o.s.c.c.c.ConfigServicePropertySourceLocator - Located environment: name=ms-customer, profiles=[default], label=null, version=3dfb484c3d068d093481832eccb35ca1dfbe66dc, state=null
 2025-02-12 07:02:19 [main] INFO  o.s.c.b.c.PropertySourceBootstrapConfiguration - Located property source: [BootstrapPropertySource {name='bootstrapProperties-configClient'}, BootstrapPropertySource {name='bootstrapProperties-https://github.com/aliciaVillon/ms-admin-server-data.git/ms-customer.yml'}]
 2025-02-12 07:02:19 [main] INFO  p.m.MsCustomerApplicationTests - No active profile set, falling back to 1 default profile: "default"
-2025-02-12 07:02:20 [main] WARN  o.s.b.w.r.c.GenericReactiveWebApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [proyecto1.mscustomer.MsCustomerApplication]; nested exception is java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
+2025-02-12 07:02:20 [main] WARN  o.s.b.w.r.c.GenericReactiveWebApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [com.bank.mscustomer.MsCustomerApplication]; nested exception is java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
 2025-02-12 07:02:20 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLoggingListener - 
 
 Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
 2025-02-12 07:02:20 [main] ERROR o.s.boot.SpringApplication - Application run failed
-org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [proyecto1.mscustomer.MsCustomerApplication]; nested exception is java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
+org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [com.bank.mscustomer.MsCustomerApplication]; nested exception is java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
 	at org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:612)
 	at org.springframework.context.annotation.ConfigurationClassParser.access$800(ConfigurationClassParser.java:110)
 	at org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorGroupingHandler.lambda$processGroupImports$1(ConfigurationClassParser.java:815)
@@ -1261,7 +1261,7 @@ Caused by: java.lang.UnsupportedClassVersionError: org/springdoc/core/conditions
 	at org.springframework.util.ClassUtils.forName(ClassUtils.java:291)
 	at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:331)
 	... 95 common frames omitted
-2025-02-12 07:02:20 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@76f7d241] to prepare test instance [proyecto1.mscustomer.MsCustomerApplicationTests@3f1c5af9]
+2025-02-12 07:02:20 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@76f7d241] to prepare test instance [com.bank.mscustomer.MsCustomerApplicationTests@3f1c5af9]
 java.lang.IllegalStateException: Failed to load ApplicationContext
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:98)
 	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:124)
@@ -1337,7 +1337,7 @@ java.lang.IllegalStateException: Failed to load ApplicationContext
 	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
 	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
-Caused by: org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [proyecto1.mscustomer.MsCustomerApplication]; nested exception is java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
+Caused by: org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [com.bank.mscustomer.MsCustomerApplication]; nested exception is java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springdoc.core.conditions.MultipleOpenApiSupportCondition]
 	at org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:612)
 	at org.springframework.context.annotation.ConfigurationClassParser.access$800(ConfigurationClassParser.java:110)
 	at org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorGroupingHandler.lambda$processGroupImports$1(ConfigurationClassParser.java:815)
@@ -1490,7 +1490,7 @@ Caused by: java.lang.ClassNotFoundException: org.springframework.http.HttpStatus
 	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
 	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:525)
 	... 92 common frames omitted
-2025-02-12 07:03:33 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@2445445a] to prepare test instance [proyecto1.mscustomer.MsCustomerApplicationTests@3e30646a]
+2025-02-12 07:03:33 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@2445445a] to prepare test instance [com.bank.mscustomer.MsCustomerApplicationTests@3e30646a]
 java.lang.IllegalStateException: Failed to load ApplicationContext
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:98)
 	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:124)
@@ -1705,7 +1705,7 @@ Caused by: java.lang.ClassNotFoundException: org.springframework.http.HttpStatus
 	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
 	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:525)
 	... 92 common frames omitted
-2025-02-12 07:32:20 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@2445445a] to prepare test instance [proyecto1.mscustomer.MsCustomerApplicationTests@3e30646a]
+2025-02-12 07:32:20 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@2445445a] to prepare test instance [com.bank.mscustomer.MsCustomerApplicationTests@3e30646a]
 java.lang.IllegalStateException: Failed to load ApplicationContext
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:98)
 	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:124)
@@ -1920,7 +1920,7 @@ Caused by: java.lang.ClassNotFoundException: org.springframework.http.HttpStatus
 	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
 	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:525)
 	... 92 common frames omitted
-2025-02-12 07:34:20 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@2445445a] to prepare test instance [proyecto1.mscustomer.MsCustomerApplicationTests@3e30646a]
+2025-02-12 07:34:20 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@2445445a] to prepare test instance [com.bank.mscustomer.MsCustomerApplicationTests@3e30646a]
 java.lang.IllegalStateException: Failed to load ApplicationContext
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:98)
 	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:124)
@@ -2135,7 +2135,7 @@ Caused by: java.lang.ClassNotFoundException: org.springframework.http.HttpStatus
 	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
 	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:525)
 	... 92 common frames omitted
-2025-02-12 07:53:13 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@46944ca9] to prepare test instance [proyecto1.mscustomer.MsCustomerApplicationTests@3ed242a4]
+2025-02-12 07:53:13 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@46944ca9] to prepare test instance [com.bank.mscustomer.MsCustomerApplicationTests@3ed242a4]
 java.lang.IllegalStateException: Failed to load ApplicationContext
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:98)
 	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:124)
@@ -2350,7 +2350,7 @@ Caused by: java.lang.ClassNotFoundException: org.springframework.http.HttpStatus
 	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
 	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:525)
 	... 92 common frames omitted
-2025-02-12 07:53:31 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@46944ca9] to prepare test instance [proyecto1.mscustomer.MsCustomerApplicationTests@3ed242a4]
+2025-02-12 07:53:31 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@46944ca9] to prepare test instance [com.bank.mscustomer.MsCustomerApplicationTests@3ed242a4]
 java.lang.IllegalStateException: Failed to load ApplicationContext
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:98)
 	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:124)
@@ -2565,7 +2565,7 @@ Caused by: java.lang.ClassNotFoundException: org.springframework.http.HttpStatus
 	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:188)
 	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:525)
 	... 92 common frames omitted
-2025-02-12 19:35:43 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@46944ca9] to prepare test instance [proyecto1.mscustomer.MsCustomerApplicationTests@3ed242a4]
+2025-02-12 19:35:43 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@46944ca9] to prepare test instance [com.bank.mscustomer.MsCustomerApplicationTests@3ed242a4]
 java.lang.IllegalStateException: Failed to load ApplicationContext
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:98)
 	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:124)
