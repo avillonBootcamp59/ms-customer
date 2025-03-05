@@ -1,22 +1,22 @@
-openapi: 3.0.1
+openapi: 3.0.3
 info:
   title: MS Customer
   description: Administrar los datos de clientes de banco.
   version: 1.3.0
 servers:
-  - url: http://localhost:8081/v1.0
+  - url: http://www.bank.pe/api/v1
     description: Generated server url
 tags:
   - name: Customer API
     description: Gestión de Clientes
 paths:
-  /customers/{id}:
+  /customers/getById/{id}:
     get:
       tags:
         - Customer API
       summary: Obtener cliente por ID
       description: Busca un cliente por su ID
-      operationId: getCustomerById
+      operationId: getById
       parameters:
         - name: id
           in: path
@@ -86,7 +86,7 @@ paths:
         - Customer API
       summary: Actualizar datos de un cliente
       description: Modifica datos de un cliente existente
-      operationId: updateCustomer
+      operationId: update
       requestBody:
         content:
           application/json:
@@ -124,7 +124,7 @@ paths:
         - Customer API
       summary: Eliminar un cliente
       description: Elimina un cliente de la base de datos.
-      operationId: deleteCustomer
+      operationId: delete
       parameters:
         - name: id
           in: path
@@ -165,7 +165,7 @@ paths:
         - Customer API
       summary: Registrar un cliente
       description: Registra un nuevo cliente en el banco
-      operationId: createCustomer
+      operationId: create
       requestBody:
         content:
           application/json:
@@ -203,7 +203,7 @@ paths:
         - Customer API
       summary: Obtener resumen consolidado del cliente
       description: Muestra cuentas y créditos del cliente
-      operationId: getCustomerSummary
+      operationId: summary
       parameters:
         - name: customerId
           in: path
@@ -241,7 +241,7 @@ paths:
         - Customer API
       summary: Obtener resumen consolidado del cliente
       description: Muestra cuentas y créditos del cliente
-      operationId: getAcquireProduct
+      operationId: acquireProduct
       parameters:
         - name: customerId
           in: path

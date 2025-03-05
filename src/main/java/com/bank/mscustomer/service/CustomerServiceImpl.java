@@ -61,7 +61,7 @@ public class CustomerServiceImpl implements CustomersApiDelegate {
   }
 
   @Override
-  public Mono<ResponseEntity<CreateCustomerResponse>> createCustomer(
+  public Mono<ResponseEntity<CreateCustomerResponse>> create(
           Mono<CreateCustomerRequest> createCustomerRequest, ServerWebExchange exchange) {
 
     return createCustomerRequest.flatMap(request ->
@@ -96,7 +96,7 @@ public class CustomerServiceImpl implements CustomersApiDelegate {
 
 
   @Override
-  public Mono<ResponseEntity<DeleteCustomerResponse>> deleteCustomer(String id, ServerWebExchange exchange) {
+  public Mono<ResponseEntity<DeleteCustomerResponse>> delete(String id, ServerWebExchange exchange) {
     return customerRepository.findById(id)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado")))
             .flatMap(existingCustomer ->
@@ -133,7 +133,7 @@ public class CustomerServiceImpl implements CustomersApiDelegate {
 
 
   @Override
-  public Mono<ResponseEntity<ListCustomerResponse>> getCustomerById(String id, ServerWebExchange exchange) {
+  public Mono<ResponseEntity<ListCustomerResponse>> getById(String id, ServerWebExchange exchange) {
     return customerRepository.findById(id)
           .flatMap(customer -> {
             ListCustomerDataResponse customerData = customerConverterMapper.toListCustomerDataResponse(customer);
@@ -152,7 +152,7 @@ public class CustomerServiceImpl implements CustomersApiDelegate {
   }
 
   @Override
-  public Mono<ResponseEntity<CustomerSummary>> getCustomerSummary(String customerId, ServerWebExchange exchange) {
+  public Mono<ResponseEntity<CustomerSummary>> summary(String customerId, ServerWebExchange exchange) {
     return customerRepository.findById(customerId)
           .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado")))
           .flatMap(customer -> {
@@ -184,7 +184,7 @@ public class CustomerServiceImpl implements CustomersApiDelegate {
 
 
   @Override
-  public Mono<ResponseEntity<UpdateCustomerResponse>> updateCustomer(
+  public Mono<ResponseEntity<UpdateCustomerResponse>> update(
           Mono<UpdateCustomerRequest> updateCustomerRequest, ServerWebExchange exchange) {
     return updateCustomerRequest
             .flatMap(request -> customerRepository.findById(request.getId())

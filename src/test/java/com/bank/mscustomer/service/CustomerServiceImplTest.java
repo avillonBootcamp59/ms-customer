@@ -115,7 +115,7 @@ class CustomerServiceImplTest {
         Mockito.when(customerConverterMapper.toListCustomerDataResponse(customerEntity)).thenReturn(customerData);
 
 
-        StepVerifier.create(customerService.getCustomerById(customerId, null))
+        StepVerifier.create(customerService.getById(customerId, null))
                 .assertNext(response -> {
                     assertEquals(HttpStatus.OK, response.getStatusCode());
                     assertNotNull(response.getBody());
@@ -142,7 +142,7 @@ class CustomerServiceImplTest {
         Mockito.when(customerRepository.findByNumberDocument(request.getNumberDocument())).thenReturn(Mono.empty());
         Mockito.when(customerRepository.save(Mockito.any(CustomerEntity.class))).thenReturn(Mono.just(customerEntity));
 
-        StepVerifier.create(customerService.createCustomer(Mono.just(request), null))
+        StepVerifier.create(customerService.create(Mono.just(request), null))
                 .assertNext(response -> {
                     assertEquals(HttpStatus.OK, response.getStatusCode());
                     assertNotNull(response.getBody());
@@ -169,7 +169,7 @@ class CustomerServiceImplTest {
         Mockito.when(customerRepository.findById(customerId)).thenReturn(Mono.just(existingCustomer));
         Mockito.when(customerRepository.save(Mockito.any(CustomerEntity.class))).thenReturn(Mono.just(updatedCustomer));
 
-        StepVerifier.create(customerService.updateCustomer(Mono.just(request), null))
+        StepVerifier.create(customerService.update(Mono.just(request), null))
                 .assertNext(response -> {
                     assertEquals(HttpStatus.OK, response.getStatusCode());
                     assertNotNull(response.getBody());
@@ -187,7 +187,7 @@ class CustomerServiceImplTest {
         Mockito.when(customerRepository.findById(customerId)).thenReturn(Mono.just(customerEntity));
         Mockito.when(customerRepository.delete(customerEntity)).thenReturn(Mono.empty());
 
-        StepVerifier.create(customerService.deleteCustomer(customerId, null))
+        StepVerifier.create(customerService.delete(customerId, null))
                 .assertNext(response -> {
                     assertEquals(200, response.getStatusCodeValue());
                     assertNotNull(response.getBody());
@@ -231,7 +231,7 @@ class CustomerServiceImplTest {
 
         Mockito.when(customerConverterMapper.toCustomerSummary(summaryDTO)).thenReturn(summary);
 
-        StepVerifier.create(customerService.getCustomerSummary(customerEntity.getId(), null))
+        StepVerifier.create(customerService.summary(customerEntity.getId(), null))
                 .assertNext(response -> {
                     assertEquals(200, response.getStatusCodeValue());
                  /*   assertNotNull(response.getBody());
