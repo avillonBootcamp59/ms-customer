@@ -35,7 +35,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
 	<dependencies>
 		<!-- Spring Boot WebFlux -->
 		<dependency>
@@ -151,7 +150,6 @@
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<!-- Compilador para Java 11 -->
@@ -185,7 +183,6 @@
 							<version>0.2.3</version>
 						</path>
 					</annotationProcessorPaths>
-
 				</configuration>
 			</plugin>
 
