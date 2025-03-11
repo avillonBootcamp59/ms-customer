@@ -152,6 +152,12 @@
 		</dependency>
 	</dependencies>
 
+<profiles>
+  <profile>
+	<id>coverage</id>
+	<activation>
+		<activeByDefault>false</activeByDefault>
+	</activation>
 	<build>
 		<plugins>
 			<!-- Compilador para Java 11 -->
@@ -304,4 +310,6 @@
 			</plugin>
 		</plugins>
 	</build>
+  </profile>
+</profiles>
 </project>
