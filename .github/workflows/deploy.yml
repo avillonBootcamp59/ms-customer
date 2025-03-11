@@ -48,10 +48,14 @@ jobs:
           java-version: 17
           distribution: 'zulu'
 
+      # Ejecutar el análisis de covertura
+      - name: Run tests and generate coverage
+        run: mvn clean verify -Pcoverage
+
       # Ejecutar el análisis de SonarCloud
       - name: Build and analyze
         run: |
-          mvn -B verify sonar:sonar -DskipTests \
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.host.url="https://sonarcloud.io" \
             -Dsonar.organization=avillonbootcamp59 \
             -Dsonar.projectKey=avillonBootcamp59_ms-customer \
