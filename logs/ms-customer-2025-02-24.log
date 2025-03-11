@@ -117,7 +117,7 @@ Action:
 
 Correct the classpath of your application so that it contains compatible versions of the classes io.github.resilience4j.spelresolver.autoconfigure.SpelResolverConfigurationOnMissingBean and io.github.resilience4j.spelresolver.configure.SpelResolverConfiguration
 
-2025-02-24 17:56:07 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@786125a6] to prepare test instance [com.bank.mscustomer.MsCustomerApplicationTests@7731504]
+2025-02-24 17:56:07 [main] ERROR o.s.test.context.TestContextManager - Caught exception while allowing TestExecutionListener [org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@786125a6] to prepare test instance [com.bank.pe.mscustomer.MsCustomerApplicationTests@7731504]
 java.lang.IllegalStateException: Failed to load ApplicationContext
 	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:98)
 	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:124)

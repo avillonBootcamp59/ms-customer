@@ -5,7 +5,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>java.com.bank.mscustomer</groupId>
+	<groupId>com.bank.pe.mscustomer</groupId>
 	<artifactId>ms-customer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ms-customer</name>
@@ -151,23 +151,9 @@
 			<version>3.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-			<version>3.1.2</version>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-oauth2-resource-server</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-oauth2-jose</artifactId>
-		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -261,14 +247,14 @@
 				<!-- Umbrales de Cobertura -->
 				<configuration>
 					<excludes>
-						<exclude>com/bank/mscustomer/MsCustomerApplication.class</exclude>
-						<exclude>com/bank/mscustomer/util/GlobalExceptionHandler.class</exclude>
-						<exclude>com/bank/mscustomer/dto/*</exclude>
-						<exclude>com/bank/mscustomer/client/*</exclude>
-						<exclude>com/bank/mscustomer/exception/*</exclude>
+						<exclude>com/bank/pe/mscustomer/MsCustomerApplication.class</exclude>
+						<exclude>com/bank/pe/mscustomer/util/GlobalExceptionHandler.class</exclude>
+						<exclude>com/bank/pe/mscustomer/dto/*</exclude>
+						<exclude>com/bank/pe/mscustomer/client/*</exclude>
+						<exclude>com/bank/pe/mscustomer/exception/*</exclude>
 						<exclude>org/openapitools/*</exclude>
 						<exclude>org/openapitools/configuration/*</exclude>
-						<exclude>com/bank/mscustomer/mapper/*</exclude>
+						<exclude>com/bank/pe/mscustomer/mapper/*</exclude>
 					</excludes>
 					<rules>
 						<rule>
@@ -301,8 +287,8 @@
 						<configuration>
 							<inputSpec>${project.basedir}/src/main/resources/openapi/api.yaml</inputSpec>
 							<generatorName>spring</generatorName>
-							<apiPackage>com.bank.mscustomer</apiPackage>
-							<modelPackage>com.bank.mscustomer.model</modelPackage>
+							<apiPackage>com.bank.pe.mscustomer</apiPackage>
+							<modelPackage>com.bank.pe.mscustomer.model</modelPackage>
 							<configOptions>
 								<dateLibrary>java8</dateLibrary>
 								<interfaceOnly>false</interfaceOnly>
