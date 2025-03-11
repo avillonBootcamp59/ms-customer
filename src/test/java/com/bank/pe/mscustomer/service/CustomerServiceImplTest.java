@@ -83,7 +83,6 @@ class CustomerServiceImplTest {
 
     }
 
-
     @Test
     @DisplayName("when fail find all customers")
     void whenFindAllCustomersFail() {
@@ -95,6 +94,7 @@ class CustomerServiceImplTest {
                         "No hay clientes registrados.".equals(((ResponseStatusException) throwable).getReason()))
                 .verify();
     }
+
     @Test
     @DisplayName("when getCustomerById then return customer")
     void whenGetCustomerById() {
