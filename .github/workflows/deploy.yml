@@ -63,15 +63,30 @@ jobs:
             -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 
-      - name: Log in hacia Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{secrets.DOCKER_HUB_USUARIO}}
-          password: ${{secrets.DOCKER_HUB_PASSWORD}}
+  deploy:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    needs: build  # Asegurar que la compilación se realice antes del despliegue
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/ms-customer:latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Iniciar sesión en Docker Hub
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      # Construir y etiquetar la imagen Docker
+      - name: Build and Tag Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/ms-customer:latest .
+          docker tag ${{ secrets.DOCKER_USERNAME }}/ms-customer:latest ${{ secrets.DOCKER_USERNAME }}/ms-customer:${{ github.run_number }}
+
+      # Subir la imagen a Docker Hub
+      - name: Push Docker Image
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/ms-customer:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/ms-customer:${{ github.run_number }}
+
+      # Cerrar sesión en Docker Hub
+      - name: Logout from Docker Hub
+        run: docker logout
