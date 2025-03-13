@@ -83,19 +83,19 @@ jobs:
 
       # Iniciar sesión en Docker Hub
       - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       # Construir y etiquetar la imagen Docker
       - name: Build and Tag Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/ms-customer:latest .
-          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/ms-customer:latest ${{ secrets.DOCKER_HUB_USERNAME }}/ms-customer:${{ github.run_number }}
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/ms-customer:latest .
+          docker tag ${{ secrets.DOCKER_USERNAME }}/ms-customer:latest ${{ secrets.DOCKER_USERNAME }}/ms-customer:${{ github.run_number }}
 
       # Subir la imagen a Docker Hub
       - name: Push Docker Image
         run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/ms-customer:latest
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/ms-customer:${{ github.run_number }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/ms-customer:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/ms-customer:${{ github.run_number }}
 
       # Cerrar sesión en Docker Hub
       - name: Logout from Docker Hub
