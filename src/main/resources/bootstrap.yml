@@ -3,13 +3,13 @@ spring:
     name: ms-customer
   cloud:
     config:
-      enabled: false
+      enabled: true
       uri: http://localhost:8888
       #uri: http://config-server:8888
       label: master
       username: avillon
       password: 4v1ll0nJd
-      fail-fast: true
+      fail-fast: false
       retry:
         max-attempts: 5
         initial-interval: 1000

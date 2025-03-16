@@ -242,6 +242,7 @@
 						<exclude>com/bank/pe/mscustomer/MsCustomerApplication.class</exclude>
 						<exclude>com/bank/pe/mscustomer/util/GlobalExceptionHandler.class</exclude>
 						<exclude>com/bank/pe/mscustomer/dto/*</exclude>
+						<exclude>com/bank/pe/mscustomer/model/*</exclude>
 						<exclude>com/bank/pe/mscustomer/client/*</exclude>
 						<exclude>com/bank/pe/mscustomer/exception/*</exclude>
 						<exclude>org/openapitools/*</exclude>
